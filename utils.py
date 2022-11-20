@@ -11,6 +11,8 @@ import math
 import torch.nn as nn
 import torch.nn.init as init
 
+import numpy as np
+import matplotlib.pyplot as plt
 
 def get_mean_and_std(dataset):
     '''Compute the mean and std value of dataset.'''
@@ -122,3 +124,37 @@ def format_time(seconds):
     if f == '':
         f = '0ms'
     return f
+
+def save_plot_over_training(per_epoch_metrics, title_name, save_path):
+    """Utility function to plot train/val accuracies and losses.
+
+    @param per_epoch_metrics: a dictionary of lists, where each list represents a metric over the
+        course of training.
+    @param title_name: String to show on the plot title.
+    """
+    t = np.arange(0, len(per_epoch_metrics['train_acc']))
+    train_acc = per_epoch_metrics['train_acc']
+    val_acc = per_epoch_metrics['val_acc']
+    train_loss = per_epoch_metrics['train_loss']
+    val_loss = per_epoch_metrics['val_loss']
+
+    fig, ax1 = plt.subplots(figsize=(6, 4))
+
+    color = 'tab:red'
+    ax1.set_xlabel('epochs')
+    ax1.set_ylabel('acc', color=color)
+    ax1.plot(t, train_acc, color=color, linewidth=1, label = 'train_acc')
+    ax1.plot(t, val_acc, color=color, linestyle='dashed', linewidth=1, label = 'val_acc')
+    ax1.tick_params(axis='y', labelcolor=color)
+    ax1.legend(loc='upper left')
+    ax2 = ax1.twinx() 
+
+    color = 'tab:blue'
+    ax2.set_ylabel('loss', color=color)  # we already handled the x-label with ax1
+    ax2.plot(t, train_loss, color=color, linewidth=1, label = 'train_loss')
+    ax2.plot(t, val_loss, color=color, linestyle='dashed', linewidth=1, label = 'val_loss')
+    ax2.tick_params(axis='y', labelcolor=color)
+    ax2.legend(loc='lower right')
+    fig.tight_layout() 
+    plt.title(title_name)
+    plt.savefig(save_path, bbox_inches='tight')
