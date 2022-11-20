@@ -13,7 +13,7 @@
 python main.py --lr 0.003 --mname 'model1' --epochs 10
 ```
 defaults: 
--lr=0.01
--epochs=100 
+- lr=0.1
+- epochs=50 
 
-mname: model name, should be unique and is required
+*mname: model name, should be unique and is required*
