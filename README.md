@@ -42,6 +42,7 @@ python resnet.py -h
 | --lr | Learning Rate | 0.01
 | --resume | Resume Training | False
 | --epochs | No. of training epochs | 50
+| --batch_size | Batch Size for Training Data | 128
 | --optimz | Optimizer: 'sgd', 'adam', 'adadelta' | 'sgd'
 | --model | Model: 'ResNet10', 'ResNet14', 'ResNet14_v2' | 'ResNet14'
 | --wd | Weight decay for l2 regularization | 5e-4
