@@ -10,9 +10,9 @@
 
 A project aimed at improving ResNet accuracy on CIFAR10 dataset while keeping the model parameters under 5 million. The project is fully modular and device agnostic in design. New transforms can be applied from `transformers.py` and new model configurations can be loaded from `models.py` dynamically. There are multiple optional arguments to help you debug and get sense of the model.
 
-> Best Accuracy: **94.88%**
+> Best Accuracy: **0.00%**
 
-> Parameters: **4,935,242**
+> Parameters: **1234**
 
 ---
 ## **Project Stucture**
