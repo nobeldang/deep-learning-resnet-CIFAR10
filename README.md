@@ -10,7 +10,7 @@
 
 This project is aimed at improving ResNet accuracy on CIFAR10 dataset while keeping the model parameters under 5 million. The project is fully modular and device agnostic in design. There are multiple optional arguments to help you debug and perform experiments.
 
-> Best Accuracy: **94.85 %**
+> Best Accuracy: <span style="color:green;font-weight:bold;">94.85 %</span>
 
 > Parameters: **2,777,674**
 
