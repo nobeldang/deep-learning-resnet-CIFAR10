@@ -21,12 +21,10 @@ A project aimed at improving ResNet accuracy on CIFAR10 dataset while keeping th
 |---------------------|---------------------------------------------|
 |`checkpoints`        | Contains the saved network states           |
 |`docs`               | Project documentaion                        |
-|`logs`               | Test run logs                               |
-|`plots`              | Saved plots                                 |
-|`models.py`          | Resnet definitions and model configuartion  |
-|`resnet.py`          | main python file                            |
-|`tools.py`           | Debug functions                             |
-|`transformers.py`    | Data Transform definitions                  |
+|`results`            | Saved histroy and plots                     |
+|`main.py`            | Main file for execution                     |
+|`resnet.py`          | Resnet definitions and model configuartion  |
+|`utils.py`           | Utility function                            |
 
 ---
 ## **Run options**
@@ -53,7 +51,7 @@ python resnet.py -h
 
 
 **Usage**
-python main.py --mname |str| [--help] [--lr {float}] [--resume] [--epochs <int>] [--optimz <str>] [--model <str>] [--wd <float>] [--do_annealing] [--overwrite]
+python main.py --mname {str} [--help] [--lr {float}] [--resume] [--epochs {int}] [--optimz {str}] [--model {str}] [--wd {float}] [--do_annealing] [--overwrite]
 
 ---
 ## **How to run**
