@@ -124,7 +124,9 @@ elif args.optimz == 'adam':
 elif args.optimz == 'adadelta':
     optimizer = optim.Adadelta(net.parameters(), lr=args.lr, weight_decay=args.wd)
 
-scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
+## Perform Cosine Annealing
+if args.do-annealing:
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 
 
 # Training
@@ -199,7 +201,8 @@ history = {'train_loss':[], 'val_loss':[], 'train_acc':[], 'val_acc':[]}
 for epoch in range(start_epoch, start_epoch+args.epochs):    
     t_loss, t_acc = train(epoch)
     v_loss, v_acc = test(epoch)
-    scheduler.step()
+    if args.do-annealing:
+        scheduler.step()
 
     history['train_loss'].append(t_loss)
     history['train_acc'].append(t_acc)
@@ -222,3 +225,4 @@ print('Best Accuracy: ',round(best_acc,4),'%')
 print('Best Model saved in /checkpoint/'+model_name+'_ckpt.pth')
 print('History and Plots saved in /results/'+model_name)
 
+ 
