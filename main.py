@@ -17,14 +17,14 @@ from utils import progress_bar, save_plot_over_training
 
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
-parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
+parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
 parser.add_argument('--resume', '-r', action='store_true', help='resume from checkpoint')
 parser.add_argument('--epochs', default=50, type=int, help='num epochs')
 parser.add_argument('--mname', required=True, type=str, help='unique model name')
-parser.add_argument('--optimz', required=True, type=str, help='optimizer: sgd, adam, adadelta', choices=['sgd', 'adam', 'adadelta'])
-parser.add_argument('--model', required=True, type=str, help='model: ResNet10, ResNet14, ResNet14_v2', choices=['ResNet10', 'ResNet14', 'ResNet14_v2'])
+parser.add_argument('--optimz', default='sgd', type=str, help='optimizer: sgd, adam, adadelta', choices=['sgd', 'adam', 'adadelta'])
+parser.add_argument('--model', default='ResNet14', type=str, help='model: ResNet10, ResNet14, ResNet14_v2', choices=['ResNet10', 'ResNet14', 'ResNet14_v2'])
 parser.add_argument('--wd', default=5e-4, type=float, help='weight decay')
-parser.add_argument('--do-annealing', action='store_true', help="Whether to use cosine annealing or not")
+parser.add_argument('--do_annealing', action='store_true', help="Whether to use cosine annealing or not")
 parser.add_argument('--overwrite', action='store_true', help="Whether to overwrite the existing model")
 args = parser.parse_args()
 
@@ -35,8 +35,11 @@ model_name = args.mname
 
 if os.path.isdir('./results/'+model_name):
     if args.overwrite:
-        os.remove('./results/'+model_name+'/history.pkl')
-        os.remove('./results/'+model_name+'/training_plot.png')
+        try:
+            os.remove('./results/'+model_name+'/history.pkl')
+            os.remove('./results/'+model_name+'/training_plot.png')
+        except:
+            print("==> Overwriting model...")
     else:
         error_msg = 'Model with name : '+model_name+' already exist!\nPlease enter a differenet model name.'
         raise ValueError(error_msg)
@@ -52,7 +55,7 @@ print('==> Preparing data..')
 transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
     transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(degrees=(30,60)),
+    # transforms.RandomRotation(degrees=(30,60)),
     transforms.ToTensor(),
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
@@ -125,7 +128,7 @@ elif args.optimz == 'adadelta':
     optimizer = optim.Adadelta(net.parameters(), lr=args.lr, weight_decay=args.wd)
 
 ## Perform Cosine Annealing
-if args.do-annealing:
+if args.do_annealing:
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 
 
@@ -201,7 +204,7 @@ history = {'train_loss':[], 'val_loss':[], 'train_acc':[], 'val_acc':[]}
 for epoch in range(start_epoch, start_epoch+args.epochs):    
     t_loss, t_acc = train(epoch)
     v_loss, v_acc = test(epoch)
-    if args.do-annealing:
+    if args.do_annealing:
         scheduler.step()
 
     history['train_loss'].append(t_loss)
