@@ -33,18 +33,24 @@ if not os.path.isdir('results'):
 
 model_name = args.mname
 
-if os.path.isdir('./results/'+model_name):
-    if args.overwrite:
-        try:
-            os.remove('./results/'+model_name+'/history.pkl')
-            os.remove('./results/'+model_name+'/training_plot.png')
-        except:
-            print("==> Overwriting model...")
+# Check for resume
+if args.resume and not os.path.isdir('./results/'+model_name):
+    error_msg = 'Model with name : '+model_name+' does not exist!\nTo resume training, enter an existing model name.'
+    raise ValueError(error_msg)
+
+if not args.resume:
+    if os.path.isdir('./results/'+model_name):
+        if args.overwrite:
+            try:
+                os.remove('./results/'+model_name+'/history.pkl')
+                os.remove('./results/'+model_name+'/training_plot.png')
+            except:
+                print("==> Overwriting model...")
+        else:
+            error_msg = 'Model with name : '+model_name+' already exist!\nPlease enter a differenet model name.'
+            raise ValueError(error_msg)
     else:
-        error_msg = 'Model with name : '+model_name+' already exist!\nPlease enter a differenet model name.'
-        raise ValueError(error_msg)
-else:
-    os.mkdir('./results/'+model_name)
+        os.mkdir('./results/'+model_name)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 best_acc = 0  # best test accuracy
@@ -112,7 +118,7 @@ if args.resume:
     # Load checkpoint.
     print('==> Resuming from checkpoint..')
     assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
-    checkpoint = torch.load('./checkpoint/ckpt.pth')
+    checkpoint = torch.load('./checkpoint/'+model_name+'_ckpt.pth')
     net.load_state_dict(checkpoint['net'])
     best_acc = checkpoint['acc']
     start_epoch = checkpoint['epoch']
@@ -200,6 +206,15 @@ def test(epoch):
 
 
 history = {'train_loss':[], 'val_loss':[], 'train_acc':[], 'val_acc':[]}
+
+if args.resume:
+    ## Loading the history
+    hist_file = './results/' + model_name + '/history.pkl'
+    with open(hist_file, 'rb') as f:
+        history = pickle.load(f)
+    os.remove('./results/'+model_name+'/history.pkl')
+    os.remove('./results/'+model_name+'/training_plot.png')
+
 
 for epoch in range(start_epoch, start_epoch+args.epochs):    
     t_loss, t_acc = train(epoch)
