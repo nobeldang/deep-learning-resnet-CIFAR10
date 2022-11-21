@@ -21,30 +21,32 @@ parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
 parser.add_argument('--resume', '-r', action='store_true', help='resume from checkpoint')
 parser.add_argument('--epochs', default=50, type=int, help='num epochs')
 parser.add_argument('--mname', required=True, type=str, help='unique model name')
-parser.add_argument('--optimz', default='sgd', type=str, help='optimizer: sgd, adam, adadelta', choices=['sgd', 'adam', 'adadelta'])
+parser.add_argument('--optimz', default='sgd', type=str, help='optimizer: sgd, adam, adadelta, rmsprop', choices=['sgd', 'adam', 'adadelta', 'rmsprop'])
 parser.add_argument('--model', default='ResNet14', type=str, help='model: ResNet10, ResNet14, ResNet14_v2', choices=['ResNet10', 'ResNet14', 'ResNet14_v2'])
+parser.add_argument('--batch_size', default=128, type=int, help="The batch size for training data")
 parser.add_argument('--wd', default=5e-4, type=float, help='weight decay')
 parser.add_argument('--do_annealing', action='store_true', help="Whether to use cosine annealing or not")
 parser.add_argument('--overwrite', action='store_true', help="Whether to overwrite the existing model")
+
 args = parser.parse_args()
 
-if not os.path.isdir('results'):
-    os.mkdir('results')
+if not os.path.isdir('results_nobel'):
+    os.mkdir('results_nobel')
 
 model_name = args.mname
 
-if os.path.isdir('./results/'+model_name):
+if os.path.isdir('./results_nobel/'+model_name):
     if args.overwrite:
         try:
-            os.remove('./results/'+model_name+'/history.pkl')
-            os.remove('./results/'+model_name+'/training_plot.png')
+            os.remove('./results_nobel/'+model_name+'/history.pkl')
+            os.remove('./results_nobel/'+model_name+'/training_plot.png')
         except:
             print("==> Overwriting model...")
     else:
         error_msg = 'Model with name : '+model_name+' already exist!\nPlease enter a differenet model name.'
         raise ValueError(error_msg)
 else:
-    os.mkdir('./results/'+model_name)
+    os.mkdir('./results_nobel/'+model_name)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 best_acc = 0  # best test accuracy
@@ -68,7 +70,7 @@ transform_test = transforms.Compose([
 trainset = torchvision.datasets.CIFAR10(
     root='./data', train=True, download=True, transform=transform_train)
 trainloader = torch.utils.data.DataLoader(
-    trainset, batch_size=128, shuffle=True, num_workers=2)
+    trainset, batch_size=args.batch_size, shuffle=True, num_workers=2)
 
 testset = torchvision.datasets.CIFAR10(
     root='./data', train=False, download=True, transform=transform_test)
@@ -124,6 +126,8 @@ if args.optimz == 'sgd':
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=args.wd)
 elif args.optimz == 'adam':
     optimizer = optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.wd)
+elif args.optimz == 'rmsprop':
+    optimizer = optim.RMSprop(net.parameters(), lr=args.lr, momentum = 0.9, weight_decay=args.wd)
 elif args.optimz == 'adadelta':
     optimizer = optim.Adadelta(net.parameters(), lr=args.lr, weight_decay=args.wd)
 
@@ -213,12 +217,12 @@ for epoch in range(start_epoch, start_epoch+args.epochs):
     history['val_acc'].append(v_acc)
 
 ### Saving History
-hist_file = './results/' + model_name + '/history.pkl'
+hist_file = './results_nobel/' + model_name + '/history.pkl'
 with open(hist_file, 'wb') as f:
     pickle.dump(history, f)
 
 ### Saving Training Plot
-plot_file = './results/' + model_name + '/training_plot.png'
+plot_file = './results_nobel/' + model_name + '/training_plot.png'
 plot_title = 'Parameters: '+str(pytorch_total_params)+' | lr :'+str(args.lr)
 save_plot_over_training(history, plot_title, plot_file)
 
@@ -226,6 +230,4 @@ save_plot_over_training(history, plot_title, plot_file)
 print('\nTraining Complete !')
 print('Best Accuracy: ',round(best_acc,4),'%')
 print('Best Model saved in /checkpoint/'+model_name+'_ckpt.pth')
-print('History and Plots saved in /results/'+model_name)
-
- 
+print('History and Plots saved in /results_nobel/'+model_name)
