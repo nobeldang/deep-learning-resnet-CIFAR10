@@ -21,6 +21,11 @@ parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
 parser.add_argument('--resume', '-r', action='store_true', help='resume from checkpoint')
 parser.add_argument('--epochs', default=50, type=int, help='num epochs')
 parser.add_argument('--mname', required=True, type=str, help='unique model name')
+parser.add_argument('--optimz', required=True, type=str, help='optimizer: sgd, adam, adadelta', choices=['sgd', 'adam', 'adadelta'])
+parser.add_argument('--model', required=True, type=str, help='model: ResNet10, ResNet14, ResNet14_v2', choices=['ResNet10', 'ResNet14', 'ResNet14_v2'])
+parser.add_argument('--wd', default=5e-4, type=float, help='weight decay')
+parser.add_argument('--do-annealing', action='store_true', help="Whether to use cosine annealing or not")
+parser.add_argument('--overwrite', action='store_true', help="Whether to overwrite the existing model")
 args = parser.parse_args()
 
 if not os.path.isdir('results'):
@@ -29,7 +34,12 @@ if not os.path.isdir('results'):
 model_name = args.mname
 
 if os.path.isdir('./results/'+model_name):
-    raise ValueError('Model with name : '+model_name+' already exist!\nPlease enter a differenet model name.')
+    if args.overwrite:
+        os.remove('./results/'+model_name+'/history.pkl')
+        os.remove('./results/'+model_name+'/training_plot.png')
+    else:
+        error_msg = 'Model with name : '+model_name+' already exist!\nPlease enter a differenet model name.'
+        raise ValueError(error_msg)
 else:
     os.mkdir('./results/'+model_name)
 
@@ -42,6 +52,7 @@ print('==> Preparing data..')
 transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
     transforms.RandomHorizontalFlip(),
+    transforms.RandomRotation(degrees=(30,60)),
     transforms.ToTensor(),
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
@@ -64,23 +75,20 @@ testloader = torch.utils.data.DataLoader(
 classes = ('plane', 'car', 'bird', 'cat', 'deer',
            'dog', 'frog', 'horse', 'ship', 'truck')
 
-# Model
+
+img, label = next(iter(trainloader))
+print('Input Image Size: ',img.size())
+
+
+# Selecting the Model
 print('==> Building model..')
-# net = VGG('VGG19')
-net = ResNet18()
-# net = PreActResNet18()
-# net = GoogLeNet()
-# net = DenseNet121()
-# net = ResNeXt29_2x64d()
-# net = MobileNet()
-# net = MobileNetV2()
-# net = DPN92()
-# net = ShuffleNetG2()
-# net = SENet18()
-# net = ShuffleNetV2(1)
-# net = EfficientNetB0()
-# net = RegNetX_200MF()
-# net = SimpleDLA()
+
+if args.model=='ResNet10':
+    net = ResNet10()
+elif args.model=='ResNet14':
+    net = ResNet14()
+elif args.model=='ResNet14_v2':
+    net = ResNet14_v2()
 net = net.to(device)
 
 
@@ -91,6 +99,7 @@ print("#"*50)
 print("Number of Parameters to train: ", pytorch_total_params)
 print("#"*50)
 print()
+
 
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
@@ -106,8 +115,15 @@ if args.resume:
     start_epoch = checkpoint['epoch']
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=args.lr,
-                      momentum=0.9, weight_decay=5e-4)
+
+## Selecting the optimizer
+if args.optimz == 'sgd':
+    optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=args.wd)
+elif args.optimz == 'adam':
+    optimizer = optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.wd)
+elif args.optimz == 'adadelta':
+    optimizer = optim.Adadelta(net.parameters(), lr=args.lr, weight_decay=args.wd)
+
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 
 
@@ -205,3 +221,4 @@ print('\nTraining Complete !')
 print('Best Accuracy: ',round(best_acc,4),'%')
 print('Best Model saved in /checkpoint/'+model_name+'_ckpt.pth')
 print('History and Plots saved in /results/'+model_name)
+
