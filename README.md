@@ -8,7 +8,7 @@
 
 # **ResNet-Lite (<5 Million Parameters)**
 
-A project aimed at improving ResNet accuracy on CIFAR10 dataset while keeping the model parameters under 5 million. The project is fully modular and device agnostic in design. New transforms can be applied from `transformers.py` and new model configurations can be loaded from `models.py` dynamically. There are multiple optional arguments to help you debug and get sense of the model.
+This project is aimed at improving ResNet accuracy on CIFAR10 dataset while keeping the model parameters under 5 million. The project is fully modular and device agnostic in design. There are multiple optional arguments to help you debug and perform experiments.
 
 > Best Accuracy: **94.85 %**
 
@@ -31,7 +31,7 @@ A project aimed at improving ResNet accuracy on CIFAR10 dataset while keeping th
 
 To get help execute -
 ```bash
-python resnet.py -h
+python resnet.py --help
 ```
 
 **Optional Arguments:**
@@ -53,25 +53,23 @@ python resnet.py -h
 
 
 **Usage**
+```bash
 python main.py --mname {str} [--help] [--lr {float}] [--resume] [--epochs {int}] [--optimz {str}] [--model {str}] [--wd {float}] [--do_annealing] [--overwrite] [--batch_size {int}] [--val_batch_size {int}]
-
+```
 ---
 ## **How to run**
 
 1. To start training with best model configuration for 100 epochs execute the following command -
     ```bash
-    python resnet.py -e 100 -o adadelta -an -sc -mx -v -m project1_model
+    python main.py --epochs 150 -optimz 'sgd' --do_annealing --batch_size 64 --model 'ResNet14' --mname `<model_name>` 
     ```
 
-2. To resume training  for 100 epochs from best state checkpoint -
+2. To resume training  for 50 epochs from best state checkpoint -
     ```bash
-    python resnet.py -e 100 -o adadelta -an -sc -mx -v -m project1_model -r AA4Test
+    python main.py --epochs 50 -optimz 'sgd' --do_annealing --batch_size 64 --model 'ResNet14' --mname 'model13' --resume
     ```
-3. To save logs to a file in logs directory -
-    ```bash
-    python resnet.py -e 100 -m project1_model -r AA4Test >> logs/<filename>.log
-    ```
-    > Replace `<filename>` with your choice of filename
+
+    > Replace `<model_name>` with your choice of model name.
 
 </br>
 
