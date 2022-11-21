@@ -15,7 +15,7 @@ This project is aimed at improving ResNet accuracy on CIFAR10 dataset while keep
 > Parameters: **2,777,674**
 
 <p align="center">
-  <img src="./results/model13/training_plot.png" width="400" />
+  <img src="./results/model13/training_plot.png" width="600" />
   <br/>
   Training History of Best Model
 </p>
