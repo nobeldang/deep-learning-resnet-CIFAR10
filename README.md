@@ -53,7 +53,7 @@ python resnet.py -h
 
 
 **Usage**
-python main.py --mname |str| [--help] [--lr <float>] [--resume] [--epochs <int>] [--optimz <str>] [--model <str>] [--wd <float>] [--do_annealing] [--overwrite]
+python main.py --mname |str| [--help] [--lr {float}] [--resume] [--epochs <int>] [--optimz <str>] [--model <str>] [--wd <float>] [--do_annealing] [--overwrite]
 
 ---
 ## **How to run**
