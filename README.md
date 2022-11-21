@@ -10,9 +10,9 @@
 
 A project aimed at improving ResNet accuracy on CIFAR10 dataset while keeping the model parameters under 5 million. The project is fully modular and device agnostic in design. New transforms can be applied from `transformers.py` and new model configurations can be loaded from `models.py` dynamically. There are multiple optional arguments to help you debug and get sense of the model.
 
-> Best Accuracy: **0.00%**
+> Best Accuracy: **94.85 %**
 
-> Parameters: **1234**
+> Parameters: **2,777,674**
 
 ---
 ## **Project Stucture**
@@ -35,19 +35,20 @@ python resnet.py -h
 ```
 
 **Optional Arguments:**
-| Arguments                | Description                  | Default
-|--------------------------|------------------------------|-----------------
-| --help | Show this help message and exit
-| --mname | Model Name for logging purpose | None (Required)
-| --lr | Learning Rate | 0.01
-| --resume | Resume Training | False
-| --epochs | No. of training epochs | 50
-| --batch_size | Batch Size for Training Data | 128
-| --optimz | Optimizer: 'sgd', 'adam', 'adadelta' | 'sgd'
-| --model | Model: 'ResNet10', 'ResNet14', 'ResNet14_v2' | 'ResNet14'
-| --wd | Weight decay for l2 regularization | 5e-4
-| --do_annealing | Enable Cosine Annealing | False
-| --overwrite | Overwrite the existing model (mname) | False
+| Arguments                | Description                                  | Default
+|--------------------------|----------------------------------------------|-----------------
+| --help                   | Show this help message and exit              |
+| --mname                  | Model Name for logging purpose               | None (Required)
+| --lr                     | Learning Rate                                | 0.01
+| --resume                 | Resume Training                              | False
+| --epochs                 | No. of training epochs                       | 50
+| --batch_size             | Batch Size for Training Data                 | 128
+| --val_batch_size         | Batch Size for Validation Data               | 100
+| --optimz                 | Optimizer: 'sgd', 'adam', 'adadelta'         | 'sgd'
+| --model                  | Model: 'ResNet10', 'ResNet14', 'ResNet14_v2' | 'ResNet14'
+| --wd                     | Weight decay for l2 regularization           | 5e-4
+| --do_annealing           | Enable Cosine Annealing                      | False
+| --overwrite              | Overwrite the existing model (mname)         | False
 
 
 
