@@ -85,5 +85,5 @@ python main.py --mname {str} [--help] [--lr {float}] [--resume] [--epochs {int}]
 
 1. Project report can be found at [docs/project_report.pdf](https://github.com/95anantsingh/NYU-ResNet-On-Steroids/tree/main/docs/project_report.pdf)
 2. Logs maintained at this [Google Sheet](https://docs.google.com/spreadsheets/d/1nRBr6NUiwAlOIIo7suecOdHwUBimqH-jmur7WVYfs0w/edit?usp=sharing)
-
+3. Our team project report at https://docs.google.com/document/d/1Mf10SwLKzK7ykE0IztuRTNsMZcgjSHEV/edit#
 
