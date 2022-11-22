@@ -84,5 +84,5 @@ python main.py --mname {str} [--help] [--lr {float}] [--resume] [--epochs {int}]
 ## **Documentation**
 
 1. Logs maintained at this [Google Sheet](https://docs.google.com/spreadsheets/d/1nRBr6NUiwAlOIIo7suecOdHwUBimqH-jmur7WVYfs0w/edit?usp=sharing)
-2. Our team project report at https://docs.google.com/document/d/1Mf10SwLKzK7ykE0IztuRTNsMZcgjSHEV/edit#
+2. Our team project report: [here](https://github.com/nobeldang/deep-learning-resnet-CIFAR10/blob/main/docs/report_mini_proj.pdf)
 
